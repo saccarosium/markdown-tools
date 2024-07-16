@@ -27,11 +27,3 @@ u.plug_define("n", "CreateLink", function() require("markdown-tools.link").creat
 u.plug_define("n", "TocOpen", function() require("markdown-tools.toc").open() end)
 
 u.lmap("n", "gO", "<Plug>MarkdownTocOpen")
-
-------------
--- Pandoc --
-------------
-
-vim.api.nvim_create_user_command("Pandoc", function(x)
-    vim.system(x.fargs)
-end, { nargs = "+" })

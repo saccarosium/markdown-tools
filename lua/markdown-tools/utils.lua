@@ -53,4 +53,10 @@ function M.lmap(mode, lhs, rhs, opts)
     vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+---@param path string
+---@return boolean
+function M.file_isvalid(path)
+    return pcall(vim.uv.fs_stat(path))
+end
+
 return M
