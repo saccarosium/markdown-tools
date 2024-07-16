@@ -7,15 +7,14 @@ local match = require("markdown-tools.utils").match
 local function get_url_from_label(node)
     local label = vim.treesitter.get_node_text(node, 0)
     local parser = vim.treesitter.get_parser()
-    local tree = parser:parse()
-    local tree_root = tree[1]:root()
+    local root = parser:parse()[1]:root()
     local parse_query = vim.treesitter.query.parse("markdown", [[
   (link_reference_definition
     (link_label) @label (#eq? @label "]] .. label .. [[")
     (link_destination) @link_destination)
   ]])
     -- Problem with handling whitespace in filenames elegently is with this iter_matches
-    for _, captures, _ in parse_query:iter_matches(tree_root, 0) do
+    for _, captures, _ in parse_query:iter_matches(root, 0) do
         local node_text = vim.treesitter.get_node_text(captures[2], 0)
         -- Kludgy method right now is to require that filenames with spaces are wrapped in <>,
         -- which are stripped out after the matching is complete
@@ -86,12 +85,12 @@ function M.follow()
 end
 
 function M.create()
-    local link_generate = function(x) return ("[%s](%s.md)"):format(x, x) end
+    local link_trasform = function(x) return ("[%s](%s.md)"):format(x, x) end
     local cword = vim.fn.expand("<cword>")
     if vim.fn.empty(cword) == 1 then
         return
     end
-    local link = link_generate(cword)
+    local link = link_trasform(cword)
     local pos = vim.api.nvim_win_get_cursor(0)
     local lnr = pos[1] - 1
     local _, start_col, end_col =
